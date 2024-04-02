@@ -17,12 +17,12 @@ return new class extends Migration {
             $table->string('item');
             $table->string('link');
             $table->dateTime('expired_at');
-            $table->dateTime('notified_at');
-            $table->string('notified_to');
-            $table->dateTime('escalated_at');
-            $table->string('escalated_to');
-            $table->string('handled_by');
-            $table->dateTime('done_at');
+            $table->dateTime('notified_at')->nullable();
+            $table->string('notified_to')->nullable();
+            $table->dateTime('escalated_at')->nullable();
+            $table->string('escalated_to')->nullable();
+            $table->string('handled_by')->nullable();
+            $table->dateTime('done_at')->nullable();
             $table->unsignedBigInteger('expiry_monitor_id');
 
             $table->timestamps();

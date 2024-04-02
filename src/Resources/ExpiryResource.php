@@ -83,7 +83,6 @@ class ExpiryResource extends Resource
 
                     DateTimePicker::make('notified_at')
                         ->rules(['date'])
-                        ->required()
                         ->placeholder('Notified At')
                         ->columnSpan([
                             'default' => 12,
@@ -93,7 +92,6 @@ class ExpiryResource extends Resource
 
                     TextInput::make('notified_to')
                         ->rules(['max:255', 'string'])
-                        ->required()
                         ->placeholder('Notified To')
                         ->columnSpan([
                             'default' => 12,
@@ -103,7 +101,6 @@ class ExpiryResource extends Resource
 
                     DateTimePicker::make('escalated_at')
                         ->rules(['date'])
-                        ->required()
                         ->placeholder('Escalated At')
                         ->columnSpan([
                             'default' => 12,
@@ -113,7 +110,6 @@ class ExpiryResource extends Resource
 
                     TextInput::make('escalated_to')
                         ->rules(['max:255', 'string'])
-                        ->required()
                         ->placeholder('Escalated To')
                         ->columnSpan([
                             'default' => 12,
@@ -123,7 +119,6 @@ class ExpiryResource extends Resource
 
                     TextInput::make('handled_by')
                         ->rules(['max:255', 'string'])
-                        ->required()
                         ->placeholder('Handled By')
                         ->columnSpan([
                             'default' => 12,
@@ -133,7 +128,6 @@ class ExpiryResource extends Resource
 
                     DateTimePicker::make('done_at')
                         ->rules(['date'])
-                        ->required()
                         ->placeholder('Done At')
                         ->columnSpan([
                             'default' => 12,
