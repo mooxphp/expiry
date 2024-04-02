@@ -1,12 +1,12 @@
 <?php
 
-namespace Moox\Builder\Models;
+namespace Moox\Expiry\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Item extends Model
+class Expiry extends Model
 {
-    protected $table = 'items';
+    protected $table = 'expiry';
 
     protected $fillable = [
         'name',

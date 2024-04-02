@@ -1,25 +1,25 @@
 <?php
 
-namespace Moox\Builder;
+namespace Moox\Expiry;
 
 use Filament\Contracts\Plugin;
 use Filament\Panel;
 use Filament\Support\Concerns\EvaluatesClosures;
-use Moox\Builder\Resources\BuilderResource;
+use Moox\Expiry\Resources\ExpiryResource;
 
-class BuilderPlugin implements Plugin
+class ExpiryPlugin implements Plugin
 {
     use EvaluatesClosures;
 
     public function getId(): string
     {
-        return 'builder';
+        return 'expiry';
     }
 
     public function register(Panel $panel): void
     {
         $panel->resources([
-            BuilderResource::class,
+            ExpiryResource::class,
         ]);
     }
 

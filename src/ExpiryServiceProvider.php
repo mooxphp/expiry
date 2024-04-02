@@ -2,22 +2,22 @@
 
 declare(strict_types=1);
 
-namespace Moox\Builder;
+namespace Moox\Expiry;
 
-use Moox\Builder\Commands\InstallCommand;
+use Moox\Expiry\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
-class BuilderServiceProvider extends PackageServiceProvider
+class ExpiryServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {
         $package
-            ->name('builder')
+            ->name('expiry')
             ->hasConfigFile()
             ->hasViews()
             ->hasTranslations()
-            ->hasMigrations(['create_items_table'])
+            ->hasMigrations(['create_expiry_table'])
             ->hasCommand(InstallCommand::class);
     }
 }
