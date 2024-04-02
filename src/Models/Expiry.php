@@ -2,22 +2,41 @@
 
 namespace Moox\Expiry\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Expiry extends Model
 {
-    protected $table = 'expiry';
+    use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
-        'name',
-        'started_at',
-        'finished_at',
-        'failed',
+        'title',
+        'slug',
+        'item',
+        'link',
+        'expired_at',
+        'notified_at',
+        'notified_to',
+        'escalated_at',
+        'escalated_to',
+        'handled_by',
+        'done_at',
+        'expiry_monitor_id',
     ];
 
+    protected $searchableFields = ['*'];
+
     protected $casts = [
-        'failed' => 'bool',
-        'started_at' => 'datetime',
-        'finished_at' => 'datetime',
+        'expired_at' => 'datetime',
+        'notified_at' => 'datetime',
+        'escalated_at' => 'datetime',
+        'done_at' => 'datetime',
     ];
+
+    public function expiryMonitor()
+    {
+        return $this->belongsTo(ExpiryMonitor::class);
+    }
 }
