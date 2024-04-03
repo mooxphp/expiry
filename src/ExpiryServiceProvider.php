@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Moox\Expiry;
 
+use Moox\Expiry\Commands\GetExpiredJobCommand;
 use Moox\Expiry\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -17,7 +18,7 @@ class ExpiryServiceProvider extends PackageServiceProvider
             ->hasConfigFile()
             ->hasViews()
             ->hasTranslations()
-            ->hasCommand(InstallCommand::class);
+            ->hasCommands(InstallCommand::class, GetExpiredJobCommand::class);
     }
 
     public function boot()

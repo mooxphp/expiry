@@ -14,14 +14,15 @@ return new class extends Migration {
             $table->bigIncrements('id');
             $table->string('title');
             $table->string('slug');
-            $table->string('item');
+            $table->unsignedBigInteger('item_id');
+            $table->unsignedBigInteger('meta_id')->nullable();
             $table->string('link');
             $table->dateTime('expired_at');
             $table->dateTime('notified_at')->nullable();
-            $table->string('notified_to')->nullable();
+            $table->unsignedBigInteger('notified_to')->nullable();
             $table->dateTime('escalated_at')->nullable();
-            $table->string('escalated_to')->nullable();
-            $table->string('handled_by')->nullable();
+            $table->unsignedBigInteger('escalated_to')->nullable();
+            $table->unsignedBigInteger('handled_by')->nullable();
             $table->dateTime('done_at')->nullable();
             $table->unsignedBigInteger('expiry_monitor_id');
 

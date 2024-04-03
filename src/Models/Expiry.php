@@ -14,7 +14,8 @@ class Expiry extends Model
     protected $fillable = [
         'title',
         'slug',
-        'item',
+        'item_id',
+        'meta_id',
         'link',
         'expired_at',
         'notified_at',

@@ -15,6 +15,8 @@ use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\HtmlString;
 use Moox\Expiry\Models\Expiry;
 use Moox\Expiry\Resources\ExpiryResource\Pages;
 
@@ -170,14 +172,16 @@ class ExpiryResource extends Resource
                     ->limit(50),
                 Tables\Columns\TextColumn::make('link')
                     ->toggleable()
-                    ->searchable(true, null, true)
-                    ->limit(50),
+                    ->formatStateUsing(
+                        fn (string $state) => self::goTo($state, 'Link to item', 'Open link to item'),
+                    )
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('expired_at')
                     ->toggleable()
-                    ->dateTime(),
+                    ->date('d M Y'),
                 Tables\Columns\TextColumn::make('notified_at')
                     ->toggleable()
-                    ->dateTime(),
+                    ->date(),
                 Tables\Columns\TextColumn::make('notified_to')
                     ->toggleable()
                     ->searchable(true, null, true)
@@ -224,5 +228,17 @@ class ExpiryResource extends Resource
             'view' => Pages\ViewExpiry::route('/{record}'),
             'edit' => Pages\EditExpiry::route('/{record}/edit'),
         ];
+    }
+
+    protected static function goTo(string $link, string $title, ?string $tooltip)
+    {
+        return new HtmlString(Blade::render('filament::components.link', [
+            'color' => 'primary',
+            'tooltip' => $tooltip,
+            'href' => $link,
+            'target' => '_blank',
+            'slot' => $title,
+            'icon' => 'heroicon-o-arrow-top-right-on-square',
+        ]));
     }
 }
