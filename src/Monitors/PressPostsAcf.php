@@ -2,45 +2,76 @@
 
 namespace Moox\Expiry\Monitors;
 
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Moox\Press\Models\WpPost;
+
 class PressPostsAcf
 {
     public function __construct()
     {
-        // Construct the Press Posts ACF
-    }
+        $expiries = DB::table('tyar9_postmeta')
+            ->where('meta_key', 'LIKE', '%_gultig_bis')
+            ->where('meta_value', 'REGEXP', '^[0-9]{8}$')
+            ->get();
 
-    public function __invoke()
-    {
-        // Invoke the Press Posts ACF
-    }
+        $today = Carbon::today();
 
-    public function boot()
-    {
-        // Boot the Press Posts ACF
-    }
+        $expiredMeta = $expiries->filter(function ($meta) use ($today) {
+            $expiryDate = Carbon::createFromFormat('Ymd', $meta->meta_value);
 
-    public function monitors()
-    {
-        $model = \Moox\Press\Models\WpPost::class;
-        $query = $model::query();
+            return $expiryDate->lessThan($today);
+        });
 
-        $query->where('post_type', 'post');
+        $expired = $expiredMeta
+            ->pluck('post_id')
+            ->unique()
+            ->all();
 
-        return $query->get();
-    }
+        $posts = WpPost::whereIn('ID', $expired)
+            ->where('post_type', 'wiki')
+            ->where('post_status', 'publish')
+            ->with('meta')
+            ->get();
 
-    public function executes()
-    {
-        // Execute the Press Posts ACF
-    }
+        foreach ($posts as $post) {
+            $post->meta->each(function ($meta) use ($post) {
+                if (Str::endsWith($meta->meta_key, '_gultig_bis')) {
+                    if (preg_match("/^\d{8}$/", $meta->meta_value)) {
+                        $dueDate = Carbon::createFromFormat(
+                            'Ymd',
+                            $meta->meta_value
+                        )->startOfDay();
+                        if ($dueDate->isPast()) {
+                            $newkey = str_replace(
+                                '_gultig_bis',
+                                '_download-titel',
+                                $meta->meta_key
+                            );
 
-    public function notifies()
-    {
-        // Notify the Press Posts ACF
-    }
+                            $metaTitle = $post->meta->firstWhere('meta_key', $newkey);
 
-    public function escalates()
-    {
-        // Escalate the Press Posts ACF
+                            if ($metaTitle) {
+                                $title = $metaTitle->meta_value;
+                            } else {
+                                $title = $post->post_title;
+                            }
+
+                            $postArray[$post->ID] = [
+                                'id' => $post->ID,
+                                'date' => $meta->meta_value,
+                                'title' => $title,
+                                'slug' => $post->post_name,
+                                'user' => $post->post_author,
+                            ];
+
+                            var_dump($postArray);
+                        }
+                    }
+                }
+            });
+        }
+
     }
 }
