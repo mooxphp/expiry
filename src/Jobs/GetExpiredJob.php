@@ -44,6 +44,8 @@ class GetExpiredJob implements ShouldQueue
             ->where('meta_value', 'REGEXP', '^[0-9]{8}$')
             ->get();
 
+        $this->setProgress(10);
+
         $today = Carbon::today();
 
         $expiredMeta = $expiries->filter(function ($meta) use ($today) {
@@ -52,10 +54,14 @@ class GetExpiredJob implements ShouldQueue
             return $expiryDate->lessThan($today);
         });
 
+        $this->setProgress(20);
+
         $expired = $expiredMeta
             ->pluck('post_id')
             ->unique()
             ->all();
+
+        $this->setProgress(30);
 
         // @phpstan-ignore-next-line
         $posts = WpPost::whereIn('ID', $expired)
@@ -63,6 +69,8 @@ class GetExpiredJob implements ShouldQueue
             ->where('post_status', 'publish')
             ->with('meta')
             ->get();
+
+        $this->setProgress(40);
 
         foreach ($posts as $post) {
             $post->meta->each(function ($meta) use ($post) {
@@ -78,6 +86,8 @@ class GetExpiredJob implements ShouldQueue
                                 '_download-titel',
                                 $meta->meta_key
                             );
+
+                            $this->setProgress(50);
 
                             $metaTitle = $post->meta->firstWhere('meta_key', $newkey);
                             $postTitle = $post->post_title;
@@ -107,16 +117,18 @@ class GetExpiredJob implements ShouldQueue
                                 'expiry_monitor_id' => 1,
                             ];
 
+                            $this->setProgress(75);
+
                             Expiry::updateOrCreate(
                                 ['meta_id' => $meta->meta_id],
                                 end($postArray)
                             );
-
-                            // Notification::send($post->author, new ExpiryNotification($post));
                         }
                     }
                 }
             });
+
+            $this->setProgress(100);
         }
     }
 }

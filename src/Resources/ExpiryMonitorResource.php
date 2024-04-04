@@ -25,6 +25,8 @@ class ExpiryMonitorResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'title';
 
+    protected static ?string $navigationGroup = 'Moox Expiry';
+
     public static function form(Form $form): Form
     {
         return $form->schema([

@@ -10,13 +10,12 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\HtmlString;
 use Moox\Expiry\Models\Expiry;
 use Moox\Expiry\Resources\ExpiryResource\Pages;
 
@@ -27,6 +26,8 @@ class ExpiryResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-clock';
 
     protected static ?string $recordTitleAttribute = 'title';
+
+    protected static ?string $navigationGroup = 'Moox Expiry';
 
     public static function form(Form $form): Form
     {
@@ -160,46 +161,36 @@ class ExpiryResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                     ->toggleable()
-                    ->searchable(true, null, true)
+                    ->searchable()
                     ->limit(50),
                 Tables\Columns\TextColumn::make('slug')
                     ->toggleable()
-                    ->searchable(true, null, true)
-                    ->limit(50),
-                Tables\Columns\TextColumn::make('item')
-                    ->toggleable()
-                    ->searchable(true, null, true)
+                    ->searchable()
                     ->limit(50),
                 Tables\Columns\TextColumn::make('link')
                     ->toggleable()
-                    ->formatStateUsing(
-                        fn (string $state) => self::goTo($state, 'Link to item', 'Open link to item'),
-                    )
                     ->searchable(),
                 Tables\Columns\TextColumn::make('expired_at')
                     ->toggleable()
                     ->date('d M Y'),
                 Tables\Columns\TextColumn::make('notified_at')
+                    ->label('Notify at')
                     ->toggleable()
-                    ->date(),
+                    ->date('d M Y'),
                 Tables\Columns\TextColumn::make('notified_to')
+                    ->label('Notify to')
                     ->toggleable()
-                    ->searchable(true, null, true)
+                    ->searchable()
                     ->limit(50),
                 Tables\Columns\TextColumn::make('escalated_at')
+                    ->label('Escalate at')
                     ->toggleable()
-                    ->dateTime(),
+                    ->date('d M Y'),
                 Tables\Columns\TextColumn::make('escalated_to')
+                    ->label('Escalate to')
                     ->toggleable()
-                    ->searchable(true, null, true)
+                    ->searchable()
                     ->limit(50),
-                Tables\Columns\TextColumn::make('handled_by')
-                    ->toggleable()
-                    ->searchable(true, null, true)
-                    ->limit(50),
-                Tables\Columns\TextColumn::make('done_at')
-                    ->toggleable()
-                    ->dateTime(),
                 Tables\Columns\TextColumn::make('expiryMonitor.title')
                     ->toggleable()
                     ->limit(50),
@@ -211,7 +202,10 @@ class ExpiryResource extends Resource
                     ->multiple()
                     ->label('ExpiryMonitor'),
             ])
-            ->actions([ViewAction::make(), EditAction::make()])
+            ->actions([
+                Action::make('Edit')->url(fn ($record): string => "/wp/wp-admin/post.php?post={$record->item_id}&action=edit"),
+                ViewAction::make(),
+                EditAction::make()])
             ->bulkActions([DeleteBulkAction::make()]);
     }
 
@@ -228,17 +222,5 @@ class ExpiryResource extends Resource
             'view' => Pages\ViewExpiry::route('/{record}'),
             'edit' => Pages\EditExpiry::route('/{record}/edit'),
         ];
-    }
-
-    protected static function goTo(string $link, string $title, ?string $tooltip)
-    {
-        return new HtmlString(Blade::render('filament::components.link', [
-            'color' => 'primary',
-            'tooltip' => $tooltip,
-            'href' => $link,
-            'target' => '_blank',
-            'slot' => $title,
-            'icon' => 'heroicon-o-arrow-top-right-on-square',
-        ]));
     }
 }
