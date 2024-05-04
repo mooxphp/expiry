@@ -39,7 +39,7 @@ class GetExpiredJob implements ShouldQueue
 
         $this->setProgress(1);
 
-        $postmetaTable = config('press.wordpress_prefix').'_postmeta';
+        $postmetaTable = config('press.wordpress_prefix').'postmeta';
         $expiries = DB::table($postmetaTable)
             ->where('meta_key', 'LIKE', '%_gultig_bis')
             ->where('meta_value', 'REGEXP', '^[0-9]{8}$')
