@@ -36,7 +36,6 @@ class GetExpiredJob implements ShouldQueue
 
     public function handle()
     {
-
         $this->setProgress(1);
 
         $postmetaTable = config('press.wordpress_prefix').'postmeta';
@@ -49,10 +48,15 @@ class GetExpiredJob implements ShouldQueue
 
         $today = Carbon::today();
 
-        $expiredMeta = $expiries->filter(function ($meta) use ($today) {
+        $relevantMetaIds = [];
+        $expiredMeta = $expiries->filter(function ($meta) use ($today, &$relevantMetaIds) {
             $expiryDate = Carbon::createFromFormat('Ymd', $meta->meta_value);
+            $isExpired = $expiryDate->lessThan($today);
+            if ($isExpired) {
+                $relevantMetaIds[] = $meta->meta_id;
+            }
 
-            return $expiryDate->lessThan($today);
+            return $isExpired;
         });
 
         $this->setProgress(20);
@@ -64,6 +68,7 @@ class GetExpiredJob implements ShouldQueue
 
         $this->setProgress(30);
 
+        // Todo: Check if this is doable in docblock of model
         // @phpstan-ignore-next-line
         $posts = WpPost::whereIn('ID', $expired)
             ->where('post_type', 'wiki')
@@ -74,62 +79,43 @@ class GetExpiredJob implements ShouldQueue
         $this->setProgress(40);
 
         foreach ($posts as $post) {
-            $post->meta->each(function ($meta) use ($post) {
-                if (Str::endsWith($meta->meta_key, '_gultig_bis')) {
-                    if (preg_match("/^\d{8}$/", $meta->meta_value)) {
-                        $dueDate = Carbon::createFromFormat(
-                            'Ymd',
-                            $meta->meta_value
-                        )->startOfDay();
-                        if ($dueDate->isPast()) {
-                            $newkey = str_replace(
-                                '_gultig_bis',
-                                '_download-titel',
-                                $meta->meta_key
-                            );
-
-                            $this->setProgress(50);
-
-                            $metaTitle = $post->meta->firstWhere('meta_key', $newkey);
-                            $postTitle = $post->post_title;
-
-                            if ($metaTitle && $postTitle) {
-                                $title = $metaTitle->meta_value.' - '.$postTitle;
-                            } elseif ($metaTitle) {
-                                $title = $metaTitle->meta_value;
-                            } else {
-                                $title = $postTitle;
-                            }
-
-                            $baseHref = config('app.url').config('press.wordpress_slug').'/?p=';
-
-                            $metaDate = Carbon::createFromFormat('Ymd', $meta->meta_value);
-
-                            $formattedDate = $metaDate->startOfDay()->toDateTimeString();
-
-                            $postArray[$post->ID] = [
-                                'item_id' => $post->ID,
-                                'meta_id' => $meta->meta_id,
-                                'expired_at' => $formattedDate,
-                                'title' => $title,
-                                'slug' => $post->post_name,
-                                'link' => $baseHref.$post->ID,
-                                'notified_to' => $post->post_author,
-                                'expiry_monitor_id' => 1,
-                            ];
-
-                            $this->setProgress(75);
-
-                            Expiry::updateOrCreate(
-                                ['meta_id' => $meta->meta_id],
-                                end($postArray)
-                            );
-                        }
-                    }
+            foreach ($post->meta as $meta) {
+                if (Str::endsWith($meta->meta_key, '_gultig_bis') && preg_match("/^\d{8}$/", $meta->meta_value)) {
+                    $this->processExpiryMeta($meta, $post, $relevantMetaIds);
                 }
-            });
+            }
+        }
 
-            $this->setProgress(100);
+        Expiry::whereNotIn('meta_id', $relevantMetaIds)->delete();
+
+        $this->setProgress(100);
+    }
+
+    private function processExpiryMeta($meta, $post, &$relevantMetaIds)
+    {
+        $dueDate = Carbon::createFromFormat('Ymd', $meta->meta_value)->startOfDay();
+        if ($dueDate->isPast()) {
+            $newKey = str_replace('_gultig_bis', '_download-titel', $meta->meta_key);
+            $metaTitle = $post->meta->firstWhere('meta_key', $newKey);
+            $postTitle = $post->post_title;
+
+            $title = $metaTitle ? ($metaTitle->meta_value.' - '.$postTitle) : $postTitle;
+            $baseHref = config('app.url').config('press.wordpress_slug').'/?p=';
+            $formattedDate = $dueDate->toDateTimeString();
+
+            $expiryData = [
+                'item_id' => $post->ID,
+                'meta_id' => $meta->meta_id,
+                'expired_at' => $formattedDate,
+                'title' => $title,
+                'slug' => $post->post_name,
+                'link' => $baseHref.$post->ID,
+                'notified_to' => $post->post_author,
+                'expiry_job' => 'Wiki Dokumente',
+            ];
+
+            Expiry::updateOrCreate(['meta_id' => $meta->meta_id], $expiryData);
+            $this->setProgress(75);
         }
     }
 }

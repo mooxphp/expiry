@@ -24,7 +24,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('escalated_to')->nullable();
             $table->unsignedBigInteger('handled_by')->nullable();
             $table->dateTime('done_at')->nullable();
-            $table->unsignedBigInteger('expiry_monitor_id');
+            $table->string('expiry_job');
 
             $table->timestamps();
             $table->softDeletes();

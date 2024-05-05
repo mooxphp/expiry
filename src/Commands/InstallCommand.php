@@ -116,8 +116,8 @@ class InstallCommand extends Command
 
             $pluginsToAdd = multiselect(
                 label: 'These plugins will be installed:',
-                options: ['ExpiryPlugin', 'ExpiryMonitorPlugin'],
-                default: ['ExpiryPlugin', 'ExpiryMonitorPlugin'],
+                options: ['ExpiryPlugin'],
+                default: ['ExpiryPlugin'],
             );
 
             $function = '::make(),';

@@ -5,7 +5,6 @@ namespace Moox\Expiry\Resources;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -138,12 +137,9 @@ class ExpiryResource extends Resource
                             'lg' => 12,
                         ]),
 
-                    Select::make('expiry_monitor_id')
-                        ->rules(['exists:expiry_monitors,id'])
+                    TextInput::make('expiry_job')
                         ->required()
-                        ->relationship('expiryMonitor', 'title')
-                        ->searchable()
-                        ->placeholder('Expiry Monitor')
+                        ->placeholder('Expiry Job')
                         ->columnSpan([
                             'default' => 12,
                             'md' => 12,
@@ -191,16 +187,14 @@ class ExpiryResource extends Resource
                     ->toggleable()
                     ->searchable()
                     ->limit(50),
-                Tables\Columns\TextColumn::make('expiryMonitor.title')
+                Tables\Columns\TextColumn::make('expiry_job')
                     ->toggleable()
                     ->limit(50),
             ])
             ->filters([
-                SelectFilter::make('expiry_monitor_id')
-                    ->relationship('expiryMonitor', 'title')
-                    ->indicator('ExpiryMonitor')
+                SelectFilter::make('expiry_job')
                     ->multiple()
-                    ->label('ExpiryMonitor'),
+                    ->label('Expiry Job'),
             ])
             ->actions([
                 Action::make('Edit')->url(fn ($record): string => "/wp/wp-admin/post.php?post={$record->item_id}&action=edit"),

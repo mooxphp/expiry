@@ -24,7 +24,7 @@ class Expiry extends Model
         'escalated_to',
         'handled_by',
         'done_at',
-        'expiry_monitor_id',
+        'expiry_job',
     ];
 
     protected $searchableFields = ['*'];
@@ -35,9 +35,4 @@ class Expiry extends Model
         'escalated_at' => 'datetime',
         'done_at' => 'datetime',
     ];
-
-    public function expiryMonitor()
-    {
-        return $this->belongsTo(ExpiryMonitor::class);
-    }
 }
