@@ -9,7 +9,6 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ViewAction;
@@ -153,53 +152,30 @@ class ExpiryResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->poll('60s')
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                     ->toggleable()
                     ->searchable()
+                    ->sortable()
                     ->limit(50),
-                Tables\Columns\TextColumn::make('slug')
-                    ->toggleable()
-                    ->searchable()
-                    ->limit(50),
-                Tables\Columns\TextColumn::make('link')
-                    ->toggleable()
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('expired_at')
                     ->toggleable()
-                    ->date('d M Y'),
-                Tables\Columns\TextColumn::make('notified_at')
-                    ->label('Notify at')
-                    ->toggleable()
-                    ->date('d M Y'),
-                Tables\Columns\TextColumn::make('notified_to')
-                    ->label('Notify to')
-                    ->toggleable()
-                    ->searchable()
-                    ->limit(50),
-                Tables\Columns\TextColumn::make('escalated_at')
-                    ->label('Escalate at')
-                    ->toggleable()
-                    ->date('d M Y'),
-                Tables\Columns\TextColumn::make('escalated_to')
-                    ->label('Escalate to')
-                    ->toggleable()
-                    ->searchable()
-                    ->limit(50),
+                    ->sortable()
+                    ->since(),
                 Tables\Columns\TextColumn::make('expiry_job')
                     ->toggleable()
+                    ->sortable()
+                    ->searchable()
                     ->limit(50),
             ])
             ->filters([
                 SelectFilter::make('expiry_job')
-                    ->multiple()
                     ->label('Expiry Job'),
             ])
             ->actions([
-                Action::make('Edit')->url(fn ($record): string => "/wp/wp-admin/post.php?post={$record->item_id}&action=edit"),
-                ViewAction::make(),
-                EditAction::make()])
+                ViewAction::make()->url(fn ($record): string => "{$record->link}"),
+                EditAction::make()->url(fn ($record): string => "/wp/wp-admin/post.php?post={$record->item_id}&action=edit"),
+            ])
             ->bulkActions([DeleteBulkAction::make()]);
     }
 

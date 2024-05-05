@@ -99,7 +99,7 @@ class GetExpiredWikiDocsJob implements ShouldQueue
             $metaTitle = $post->meta->firstWhere('meta_key', $newKey);
             $postTitle = $post->post_title;
 
-            $title = $metaTitle ? ($metaTitle->meta_value.' - '.$postTitle) : $postTitle;
+            $title = $metaTitle ? ($postTitle.' '.$metaTitle->meta_value) : $postTitle;
             $baseHref = config('app.url').config('press.wordpress_slug').'/?p=';
             $formattedDate = $dueDate->toDateTimeString();
 
