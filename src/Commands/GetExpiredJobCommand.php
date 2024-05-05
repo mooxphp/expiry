@@ -3,13 +3,13 @@
 namespace Moox\Expiry\Commands;
 
 use Illuminate\Console\Command;
-use Moox\Expiry\Jobs\GetExpiredJob;
+use Moox\Expiry\Jobs\GetExpiredWikiDocsJob;
 
 class GetExpiredJobCommand extends Command
 {
     protected $signature = 'moox:getexpired';
 
-    protected $description = 'Start the Moox Get Expired Job';
+    protected $description = 'Start the Moox Expiry Jobs';
 
     public function __construct()
     {
@@ -18,10 +18,11 @@ class GetExpiredJobCommand extends Command
 
     public function handle()
     {
-        $this->info('Starting Moox Get Expired Job');
+        $this->info('Starting Moox Expiry Jobs');
 
-        GetExpiredJob::dispatch();
+        GetExpiredWikiDocsJob::dispatch();
+        // Add more jobs here
 
-        $this->info('Moox Demo Get Expired finished');
+        $this->info('Moox Expiry Jobs started successfully!');
     }
 }

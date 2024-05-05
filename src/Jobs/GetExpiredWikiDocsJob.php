@@ -14,7 +14,7 @@ use Moox\Expiry\Models\Expiry;
 use Moox\Jobs\Traits\JobProgress;
 use Moox\Press\Models\WpPost;
 
-class GetExpiredJob implements ShouldQueue
+class GetExpiredWikiDocsJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, JobProgress, Queueable, SerializesModels;
 
