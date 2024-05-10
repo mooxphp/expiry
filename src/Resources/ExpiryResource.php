@@ -167,6 +167,12 @@ class ExpiryResource extends Resource
                     ->sortable()
                     ->searchable()
                     ->limit(50),
+                Tables\Columns\TextColumn::make('notifyUser.name')
+                    ->label('Notified to')
+                    ->toggleable()
+                    ->sortable()
+                    ->searchable()
+                    ->limit(50),
             ])
             ->filters([
                 SelectFilter::make('expiry_job')
