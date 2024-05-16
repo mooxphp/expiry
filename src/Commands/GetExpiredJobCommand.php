@@ -4,6 +4,7 @@ namespace Moox\Expiry\Commands;
 
 use Illuminate\Console\Command;
 use Moox\Expiry\Jobs\GetExpiredWikiDocsJob;
+use Moox\Expiry\Jobs\GetExpiredWikiPostsJob;
 
 class GetExpiredJobCommand extends Command
 {
@@ -21,7 +22,7 @@ class GetExpiredJobCommand extends Command
         $this->info('Starting Moox Expiry Jobs');
 
         GetExpiredWikiDocsJob::dispatch();
-        // Add more jobs here
+        GetExpiredWikiPostsJob::dispatch();
 
         $this->info('Moox Expiry Jobs started successfully!');
     }
