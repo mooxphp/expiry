@@ -62,23 +62,39 @@ class GetExpiredWikiPostsJob implements ShouldQueue
 
         $baseHref = config('app.url').config('press.wordpress_slug').'/?p=';
 
+        if ($post->gultig_bis) {
+            $expiryDate = Carbon::parse($post->gultig_bis);
+            $expiryJob = 'Wiki Posts';
+        } else {
+            $expiryDate = Carbon::parse($post->post_modified)->addYear();
+            $expiryJob = 'Wiki Posts (ohne Datum)';
+        }
+
         if ($post->verantwortlicher) {
             $notifiedTo = $post->verantwortlicher;
-            $title = $post->post_title;
+            $expiryJob = $expiryJob;
         } else {
             $notifiedTo = 1;
-            $title = $post->post_title.' (Kein Verantwortlicher)';
+            $expiryJob = $expiryJob.' (Kein Verantwortlicher)';
+        }
+
+        if ($post->turnus) {
+            // manipulate expiry date based on turnus
+        }
+
+        if ($post->fruhwarnung) {
+            // manipulate expiry date based on fruhwarnung
         }
 
         $expiryData = [
             'item_id' => $post->ID,
             'meta_id' => 0,
             'expired_at' => $post->post_modified,
-            'title' => $title,
+            'title' => $post->post_title,
             'slug' => $post->post_name,
             'link' => $baseHref.$post->ID,
             'notified_to' => $notifiedTo,
-            'expiry_job' => 'Wiki Posts',
+            'expiry_job' => $expiryJob,
         ];
 
         Expiry::updateOrCreate([
