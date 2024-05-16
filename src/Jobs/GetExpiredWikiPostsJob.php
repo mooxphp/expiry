@@ -64,15 +64,17 @@ class GetExpiredWikiPostsJob implements ShouldQueue
 
         if ($post->verantwortlicher) {
             $notifiedTo = $post->verantwortlicher;
+            $title = $post->post_title;
         } else {
             $notifiedTo = 1;
+            $title = $post->post_title.' (Kein Verantwortlicher)';
         }
 
         $expiryData = [
             'item_id' => $post->ID,
             'meta_id' => 0,
             'expired_at' => $post->post_modified,
-            'title' => $post->post_title,
+            'title' => $title,
             'slug' => $post->post_name,
             'link' => $baseHref.$post->ID,
             'notified_to' => $notifiedTo,
