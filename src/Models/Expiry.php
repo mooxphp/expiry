@@ -2,11 +2,12 @@
 
 namespace Moox\Expiry\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Moox\Press\QueryBuilder\UserQueryBuilder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Expiry extends Model
 {
@@ -64,5 +65,19 @@ class Expiry extends Model
         return new UserQueryBuilder(
             $connection, $connection->getQueryGrammar(), $connection->getPostProcessor()
         );
+    }
+
+    public static function getExpiryJobOptions(): Collection
+    {
+        return static::select('expiry_job')
+            ->distinct()
+            ->pluck('expiry_job', 'expiry_job');
+    }
+
+    public static function getUserOptions(): array
+    {
+        $notifiedToUserIds = Expiry::pluck('notified_to')->unique();
+        $users = config('expiry.user_model')::whereIn('id', $notifiedToUserIds)->pluck('displayname', 'id')->toArray();
+        return $users;
     }
 }
