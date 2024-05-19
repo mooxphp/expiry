@@ -2,12 +2,12 @@
 
 namespace Moox\Expiry\Models;
 
-use Illuminate\Support\Collection;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Moox\Press\QueryBuilder\UserQueryBuilder;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
+use Moox\Press\QueryBuilder\UserQueryBuilder;
 
 class Expiry extends Model
 {
@@ -78,6 +78,7 @@ class Expiry extends Model
     {
         $notifiedToUserIds = Expiry::pluck('notified_to')->unique();
         $users = config('expiry.user_model')::whereIn('id', $notifiedToUserIds)->pluck('displayname', 'id')->toArray();
+
         return $users;
     }
 }
