@@ -78,8 +78,15 @@ class Expiry extends Model
 
     public static function getUserOptions(): array
     {
+        $userModel = config('expiry.user_model');
+
+        if (! class_exists($userModel)) {
+            throw new \Exception("User model class {$userModel} does not exist.");
+        }
+
         $notifiedToUserIds = Expiry::pluck('notified_to')->unique();
-        $users = config('expiry.user_model')::whereIn('id', $notifiedToUserIds)->pluck('display_name', 'id')->toArray();
+
+        $users = $userModel::whereIn('ID', $notifiedToUserIds)->pluck('display_name', 'ID')->toArray();
 
         return $users;
     }
