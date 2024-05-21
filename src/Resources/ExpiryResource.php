@@ -207,6 +207,14 @@ class ExpiryResource extends Resource
                     ->label('Job')
                     ->options(Expiry::getExpiryJobOptions()),
 
+                SelectFilter::make('category')
+                    ->label('Category')
+                    ->options(Expiry::getExpiryCategoryOptions()),
+
+                SelectFilter::make('status')
+                    ->label('Status')
+                    ->options(Expiry::getExpiryStatusOptions()),
+
                 SelectFilter::make('notified_to')
                     ->label('User')
                     ->options(Expiry::getUserOptions()),

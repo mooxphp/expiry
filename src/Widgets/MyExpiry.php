@@ -41,10 +41,29 @@ class MyExpiry extends BaseWidget
                     ->sortable()
                     ->searchable()
                     ->limit(50),
+                Tables\Columns\TextColumn::make('category')
+                    ->toggleable()
+                    ->sortable()
+                    ->searchable()
+                    ->limit(50),
+                Tables\Columns\TextColumn::make('status')
+                    ->toggleable()
+                    ->sortable()
+                    ->searchable()
+                    ->limit(50),
             ])
             ->filters([
                 SelectFilter::make('expiry_job')
-                    ->label('Expiry Job'),
+                    ->label('Job')
+                    ->options(Expiry::getExpiryJobOptions()),
+
+                SelectFilter::make('category')
+                    ->label('Category')
+                    ->options(Expiry::getExpiryCategoryOptions()),
+
+                SelectFilter::make('status')
+                    ->label('Status')
+                    ->options(Expiry::getExpiryStatusOptions()),
             ])
             ->actions([
                 ViewAction::make()->url(fn ($record): string => "{$record->link}"),

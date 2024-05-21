@@ -73,7 +73,24 @@ class Expiry extends Model
     {
         return static::select('expiry_job')
             ->distinct()
+            ->whereNotNull('expiry_job')
             ->pluck('expiry_job', 'expiry_job');
+    }
+
+    public static function getExpiryCategoryOptions(): Collection
+    {
+        return static::select('category')
+            ->distinct()
+            ->whereNotNull('category')
+            ->pluck('category', 'category');
+    }
+
+    public static function getExpiryStatusOptions(): Collection
+    {
+        return static::select('status')
+            ->distinct()
+            ->whereNotNull('status')
+            ->pluck('status', 'status');
     }
 
     public static function getUserOptions(): array
