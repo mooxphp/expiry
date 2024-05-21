@@ -86,8 +86,9 @@ class Expiry extends Model
 
         $notifiedToUserIds = Expiry::pluck('notified_to')->unique();
 
-        $users = $userModel::whereIn('ID', $notifiedToUserIds)->pluck('display_name', 'ID')->toArray();
+        $users = $userModel::whereIn('ID', $notifiedToUserIds)
+            ->get(['ID', 'display_name']);
 
-        return $users;
+        return $users->pluck('display_name', 'ID')->toArray();
     }
 }
