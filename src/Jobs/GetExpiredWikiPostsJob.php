@@ -102,7 +102,7 @@ class GetExpiredWikiPostsJob implements ShouldQueue
             'slug' => $post->post_name,
             'link' => $baseHref.$post->ID,
             'notified_to' => $notifiedTo,
-            'expiry_job' => 'Wiki',
+            'expiry_job' => 'Wiki Posts',
             'category' => $thema,
             'status' => $status,
         ];
