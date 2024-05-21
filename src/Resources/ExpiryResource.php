@@ -185,7 +185,7 @@ class ExpiryResource extends Resource
                     ->sortable()
                     ->searchable()
                     ->limit(50),
-                Tables\Columns\TextColumn::make('notifyUser.displayname')
+                Tables\Columns\TextColumn::make('notifyUser.display_name')
                     ->toggleable()
                     ->sortable()
                     ->searchable()

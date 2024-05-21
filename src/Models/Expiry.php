@@ -79,7 +79,7 @@ class Expiry extends Model
     public static function getUserOptions(): array
     {
         $notifiedToUserIds = Expiry::pluck('notified_to')->unique();
-        $users = config('expiry.user_model')::whereIn('id', $notifiedToUserIds)->pluck('displayname', 'id')->toArray();
+        $users = config('expiry.user_model')::whereIn('id', $notifiedToUserIds)->pluck('display_name', 'id')->toArray();
 
         return $users;
     }
