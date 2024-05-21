@@ -68,7 +68,6 @@ class GetExpiredWikiDocsJob implements ShouldQueue
 
         $this->setProgress(30);
 
-        // Todo: Check if this is doable in docblock of model
         // @phpstan-ignore-next-line
         $posts = WpPost::whereIn('ID', $expired)
             ->where('post_type', 'wiki')
@@ -112,6 +111,8 @@ class GetExpiredWikiDocsJob implements ShouldQueue
                 'link' => $baseHref.$post->ID,
                 'notified_to' => $post->post_author,
                 'expiry_job' => 'Wiki Dokumente',
+                'status' => 'OK',
+                'category' => 'Downloads',
             ];
 
             Expiry::updateOrCreate(['meta_id' => $meta->meta_id], $expiryData);

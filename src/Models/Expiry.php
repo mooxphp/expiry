@@ -20,6 +20,9 @@ class Expiry extends Model
         'item_id',
         'meta_id',
         'link',
+        'expiry_job',
+        'category',
+        'status',
         'expired_at',
         'notified_at',
         'notified_to',
@@ -27,7 +30,6 @@ class Expiry extends Model
         'escalated_to',
         'handled_by',
         'done_at',
-        'expiry_job',
     ];
 
     protected $searchableFields = ['*'];

@@ -64,18 +64,18 @@ class GetExpiredWikiPostsJob implements ShouldQueue
 
         if ($post->gultig_bis) {
             $expiryDate = Carbon::parse($post->gultig_bis);
-            $expiryJob = 'Wiki Posts';
+            $status = 'OK';
         } else {
             $expiryDate = Carbon::parse($post->post_modified)->addYear();
-            $expiryJob = 'Wiki Posts (ohne Datum)';
+            $status = 'Kein Ablaufdatum';
         }
 
         if ($post->verantwortlicher) {
             $notifiedTo = $post->verantwortlicher;
-            $expiryJob = $expiryJob;
+            $status = 'OK';
         } else {
-            $notifiedTo = 1;
-            $expiryJob = $expiryJob.' (Kein Verantwortlicher)';
+            $notifiedTo = config('expiry.default_notified_to');
+            $status = 'Niemand verantwortlich';
         }
 
         if ($post->turnus) {
@@ -86,6 +86,14 @@ class GetExpiredWikiPostsJob implements ShouldQueue
             // manipulate expiry date based on fruhwarnung
         }
 
+        $themaTaxonomy = $post->taxonomies()->where('taxonomy', 'thema')->first();
+
+        if ($themaTaxonomy) {
+            $thema = $themaTaxonomy->term->name;
+        } else {
+            $thema = 'Unbekannt';
+        }
+
         $expiryData = [
             'item_id' => $post->ID,
             'meta_id' => 0,
@@ -94,7 +102,9 @@ class GetExpiredWikiPostsJob implements ShouldQueue
             'slug' => $post->post_name,
             'link' => $baseHref.$post->ID,
             'notified_to' => $notifiedTo,
-            'expiry_job' => $expiryJob,
+            'expiry_job' => 'Wiki',
+            'category' => $thema,
+            'status' => $status,
         ];
 
         Expiry::updateOrCreate([

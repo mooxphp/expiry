@@ -144,6 +144,24 @@ class ExpiryResource extends Resource
                             'md' => 12,
                             'lg' => 12,
                         ]),
+
+                    TextInput::make('category')
+                        ->required()
+                        ->placeholder('Expiry Job')
+                        ->columnSpan([
+                            'default' => 12,
+                            'md' => 12,
+                            'lg' => 12,
+                        ]),
+
+                    TextInput::make('status')
+                        ->required()
+                        ->placeholder('Expiry Job')
+                        ->columnSpan([
+                            'default' => 12,
+                            'md' => 12,
+                            'lg' => 12,
+                        ]),
                 ]),
             ]),
         ]);
@@ -168,7 +186,16 @@ class ExpiryResource extends Resource
                     ->searchable()
                     ->limit(50),
                 Tables\Columns\TextColumn::make('notifyUser.displayname')
-                    ->label('Notified to')
+                    ->toggleable()
+                    ->sortable()
+                    ->searchable()
+                    ->limit(50),
+                Tables\Columns\TextColumn::make('category')
+                    ->toggleable()
+                    ->sortable()
+                    ->searchable()
+                    ->limit(50),
+                Tables\Columns\TextColumn::make('status')
                     ->toggleable()
                     ->sortable()
                     ->searchable()
