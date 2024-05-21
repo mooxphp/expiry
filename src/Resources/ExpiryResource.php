@@ -204,7 +204,7 @@ class ExpiryResource extends Resource
             ])
             ->filters([
                 SelectFilter::make('expiry_job')
-                    ->label('Ablauftyp')
+                    ->label('Job')
                     ->options(Expiry::getExpiryJobOptions()),
 
                 SelectFilter::make('notified_to')

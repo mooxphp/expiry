@@ -84,11 +84,20 @@ class Expiry extends Model
             throw new \Exception("User model class {$userModel} does not exist.");
         }
 
-        $notifiedToUserIds = Expiry::pluck('notified_to')->unique();
+        $notifiedToUserIds = Expiry::pluck('notified_to')->unique()->filter();
+
+        if ($notifiedToUserIds->isEmpty()) {
+            return [];
+        }
 
         $users = $userModel::whereIn('ID', $notifiedToUserIds)
             ->get(['ID', 'display_name']);
 
-        return $users->pluck('display_name', 'ID')->toArray();
+        return $users
+            ->pluck('display_name', 'ID')
+            ->filter(function ($displayName) {
+                return ! is_null($displayName);
+            })
+            ->toArray();
     }
 }
