@@ -66,8 +66,8 @@ class MyExpiry extends BaseWidget
                     ->options(Expiry::getExpiryStatusOptions()),
             ])
             ->actions([
-                ViewAction::make()->url(fn ($record): string => "{$record->link}"),
-                EditAction::make()->url(fn ($record): string => "/wp/wp-admin/post.php?post={$record->item_id}&action=edit"),
+                ViewAction::make()->url(fn ($record): string => "{$record->link}")
+                ->openUrlInNewTab(),
             ])
             ->bulkActions([DeleteBulkAction::make()]);
     }
