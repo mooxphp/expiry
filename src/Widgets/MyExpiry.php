@@ -4,7 +4,6 @@ namespace Moox\Expiry\Widgets;
 
 use Filament\Tables;
 use Filament\Tables\Actions\DeleteBulkAction;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -67,7 +66,7 @@ class MyExpiry extends BaseWidget
             ])
             ->actions([
                 ViewAction::make()->url(fn ($record): string => "{$record->link}")
-                ->openUrlInNewTab(),
+                    ->openUrlInNewTab(),
             ])
             ->bulkActions([DeleteBulkAction::make()]);
     }
