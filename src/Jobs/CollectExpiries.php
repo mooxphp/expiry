@@ -8,18 +8,21 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Moox\Expiry\Models\Expiry;
-use Moox\Jobs\Traits\JobProgress;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Moox\Expiry\Models\Expiry;
+use Moox\Jobs\Traits\JobProgress;
 
 class CollectExpiries implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, JobProgress, Queueable, SerializesModels;
 
     public $tries;
+
     public $timeout;
+
     public $maxExceptions;
+
     public $backoff;
 
     public function __construct()

@@ -16,8 +16,11 @@ class DemoExpiries implements ShouldQueue
     use Dispatchable, InteractsWithQueue, JobProgress, Queueable, SerializesModels;
 
     public $tries;
+
     public $timeout;
+
     public $maxExceptions;
+
     public $backoff;
 
     public function __construct()
