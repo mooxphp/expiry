@@ -7,7 +7,7 @@ use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Filament\Widgets\TableWidget as BaseWidget;
+use Moox\Core\Base\BaseWidget;
 use Moox\Expiry\Models\Expiry;
 
 class MyExpiry extends BaseWidget
@@ -69,5 +69,29 @@ class MyExpiry extends BaseWidget
                     ->openUrlInNewTab(),
             ])
             ->bulkActions([DeleteBulkAction::make()]);
+    }
+
+    public function getPresetViews(): array
+    {
+        if ($this->useAdvancedTables === true) {
+
+            return [
+                'Dokumente' => \Archilex\AdvancedTables\Components\PresetView::make()
+                    ->modifyQueryUsing(fn ($query) => $query->where('expiry_job', 'Wiki Dokumente'))
+                    ->icon('heroicon-o-document-text')
+                    ->badge(Expiry::query()->where('expiry_job', 'Wiki Dokumente')->count())
+                    ->favorite(),
+                'Artikel' => \Archilex\AdvancedTables\Components\PresetView::make()
+                    ->modifyQueryUsing(fn ($query) => $query->where('expiry_job', 'Wiki Artikel'))
+                    ->icon('heroicon-o-document-check')
+                    ->badge(Expiry::query()->where('expiry_job', 'Wiki Artikel')->count())
+                    ->favorite(),
+                'Aufgaben' => \Archilex\AdvancedTables\Components\PresetView::make()
+                    ->modifyQueryUsing(fn ($query) => $query->where('expiry_job', 'Wiki Aufgaben'))
+                    ->icon('heroicon-o-clipboard-document-list')
+                    ->badge(Expiry::query()->where('expiry_job', 'Wiki Aufgaben')->count())
+                    ->favorite(),
+            ];
+        }
     }
 }

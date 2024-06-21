@@ -7,16 +7,16 @@ use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Moox\Core\Base\BaseResource;
 use Moox\Expiry\Models\Expiry;
 use Moox\Expiry\Resources\ExpiryResource\Pages;
 
-class ExpiryResource extends BaseResource
+class ExpiryResource extends Resource
 {
     protected static ?string $model = Expiry::class;
 
