@@ -2,18 +2,20 @@
 
 namespace Moox\Expiry\Resources;
 
-use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Actions\DeleteBulkAction;
-use Filament\Tables\Actions\ViewAction;
-use Filament\Tables\Filters\SelectFilter;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Moox\Expiry\Models\Expiry;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Grid;
+use Filament\Tables\Actions\Action;
+use Filament\Forms\Components\Section;
+use Filament\Tables\Actions\ViewAction;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Tables\Actions\DeleteBulkAction;
 use Moox\Expiry\Resources\ExpiryResource\Pages;
 
 class ExpiryResource extends Resource
@@ -171,31 +173,36 @@ class ExpiryResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('title')
+                    ->label('Titel')
                     ->toggleable()
                     ->searchable()
                     ->sortable()
                     ->limit(50),
                 Tables\Columns\TextColumn::make('expired_at')
+                    ->label('Abgelaufen')
                     ->toggleable()
                     ->sortable()
                     ->since(),
-                Tables\Columns\TextColumn::make('expiry_job')
+                Tables\Columns\TextColumn::make('notifyUser.display_name')
+                    ->label('Verantwortlicher')
                     ->toggleable()
                     ->sortable()
                     ->searchable()
                     ->limit(50),
-                Tables\Columns\TextColumn::make('notifyUser.display_name')
-                    ->label('Notified To')
+                Tables\Columns\TextColumn::make('expiry_job')
+                    ->label('Typ')
                     ->toggleable()
                     ->sortable()
                     ->searchable()
                     ->limit(50),
                 Tables\Columns\TextColumn::make('category')
+                    ->label('Kategorie')
                     ->toggleable()
                     ->sortable()
                     ->searchable()
                     ->limit(50),
                 Tables\Columns\TextColumn::make('status')
+                    ->label('Status')
                     ->toggleable()
                     ->sortable()
                     ->searchable()
@@ -203,11 +210,11 @@ class ExpiryResource extends Resource
             ])
             ->filters([
                 SelectFilter::make('expiry_job')
-                    ->label('Job')
+                    ->label('Typ')
                     ->options(Expiry::getExpiryJobOptions()),
 
                 SelectFilter::make('category')
-                    ->label('Category')
+                    ->label('Kategorie')
                     ->options(Expiry::getExpiryCategoryOptions()),
 
                 SelectFilter::make('status')
@@ -215,7 +222,7 @@ class ExpiryResource extends Resource
                     ->options(Expiry::getExpiryStatusOptions()),
 
                 SelectFilter::make('notified_to')
-                    ->label('User')
+                    ->label('Verantwortlicher')
                     ->options(Expiry::getUserOptions()),
             ])
             ->actions([
@@ -223,7 +230,30 @@ class ExpiryResource extends Resource
                     ->url(fn ($record): string => "{$record->link}")
                     ->openUrlInNewTab(),
             ])
-            ->bulkActions([DeleteBulkAction::make()]);
+            ->bulkActions([DeleteBulkAction::make()])
+            ->headerActions(
+                config('expiry.collect_expiries_action')
+                    ? [Action::make('collectExpiries')
+                        ->label('Expiries aktualisieren')
+                        ->requiresConfirmation()
+                        ->action(function () {
+                            self::collectExpiries();
+                        })]
+                    : []
+            );
+    }
+
+    public static function collectExpiries()
+    {
+        $jobs = config('expiry.collect_expiries_jobs', []);
+        foreach ($jobs as $jobClass) {
+            dispatch(new $jobClass());
+        }
+
+        Notification::make()
+            ->title('Aktualisieren gestartet')
+            ->success()
+            ->send();
     }
 
     public static function getRelations(): array

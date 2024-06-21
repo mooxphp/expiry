@@ -16,6 +16,9 @@ return [
     // use and customize CollectExpiries instead of DemoExpiries
     // DemoExpiries is just a job for creating demo data:
     // 'collect_expiries_job' => \Moox\Expiry\Jobs\CollectExpiries::class,
-    'collect_expiries_job' => \Moox\Expiry\Jobs\DemoExpiries::class,
+    'collect_expiries_jobs' => [
+        \Moox\Expiry\Jobs\CollectExpiries::class,
+        // Add more jobs here if needed.
+    ],
     'send_summary_job' => \Moox\Expiry\Jobs\SendSummary::class,
 ];
