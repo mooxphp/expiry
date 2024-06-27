@@ -7,7 +7,6 @@ use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
-use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
@@ -230,31 +229,11 @@ class ExpiryResource extends Resource
                     ->url(fn ($record): string => "{$record->link}")
                     ->openUrlInNewTab(),
             ])
-            ->bulkActions([DeleteBulkAction::make()])
-            ->headerActions(
-                config('expiry.collect_expiries_action')
-                    ? [Action::make('collectExpiries')
-                        ->label('Expiries aktualisieren')
-                        ->requiresConfirmation()
-                        ->action(function () {
-                            self::collectExpiries();
-                        })]
-                    : []
-            );
+            ->bulkActions([DeleteBulkAction::make()]);
+
     }
 
-    public static function collectExpiries()
-    {
-        $jobs = config('expiry.collect_expiries_jobs', []);
-        foreach ($jobs as $jobClass) {
-            dispatch(new $jobClass());
-        }
 
-        Notification::make()
-            ->title('Aktualisieren gestartet')
-            ->success()
-            ->send();
-    }
 
     public static function getRelations(): array
     {
