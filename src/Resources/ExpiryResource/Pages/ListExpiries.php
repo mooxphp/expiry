@@ -3,9 +3,9 @@
 namespace Moox\Expiry\Resources\ExpiryResource\Pages;
 
 use Filament\Actions\Action;
-use Moox\Expiry\Models\Expiry;
-use Moox\Core\Base\BaseListRecords;
 use Filament\Notifications\Notification;
+use Moox\Core\Base\BaseListRecords;
+use Moox\Expiry\Models\Expiry;
 use Moox\Expiry\Resources\ExpiryResource;
 
 class ListExpiries extends BaseListRecords
@@ -14,16 +14,16 @@ class ListExpiries extends BaseListRecords
 
     protected function getHeaderActions(): array
     {
-    return config('expiry.collect_expiries_action')
-        ? [
-            Action::make('collectExpiries')
-                ->label('Expiries aktualisieren')
-                ->requiresConfirmation()
-                ->action(function () {
-                    self::collectExpiries();
-                })
-          ]
-        : [];
+        return config('expiry.collect_expiries_action')
+            ? [
+                Action::make('collectExpiries')
+                    ->label('Expiries aktualisieren')
+                    ->requiresConfirmation()
+                    ->action(function () {
+                        self::collectExpiries();
+                    }),
+            ]
+            : [];
     }
 
     public static function collectExpiries()
