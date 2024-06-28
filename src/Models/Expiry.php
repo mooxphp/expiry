@@ -115,6 +115,9 @@ class Expiry extends Model
             ->filter(function ($displayName) {
                 return ! is_null($displayName);
             })
+            ->sortBy(function($displayName, $id) {
+                return strtolower($displayName);
+            })
             ->toArray();
     }
 }
