@@ -225,7 +225,17 @@ class ExpiryResource extends Resource
             ])
             ->actions([
                 ViewAction::make()
-                    ->url(fn ($record): string => "{$record->link}")
+                ->url(function ($record) {
+                    if ($record->category === 'Download') {
+                        return "{$record->link}/#dokumente-und-downloads";
+                    } elseif ($record->category === 'Aufgabe') {
+                        return "{$record->link}/#dokumente-aufgabenliste";
+                    } elseif ($record->category === 'OneDrive') {
+                        return "{$record->link}/#onedrive-dokumente";
+                    } else {
+                        return $record->link;
+                    }
+                })
                     ->openUrlInNewTab(),
             ])
             ->bulkActions([DeleteBulkAction::make()]);
