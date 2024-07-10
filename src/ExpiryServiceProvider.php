@@ -18,6 +18,12 @@ class ExpiryServiceProvider extends PackageServiceProvider
             ->hasViews()
             ->hasMigration('create_expiries_table')
             ->hasTranslations()
+            ->hasRoutes('api')
             ->hasCommands(InstallCommand::class);
+    }
+
+    public function packageRegistered()
+    {
+        $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
     }
 }

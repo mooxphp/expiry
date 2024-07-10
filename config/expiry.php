@@ -21,4 +21,5 @@ return [
         // Add more jobs here if needed.
     ],
     'send_summary_job' => \Moox\Expiry\Jobs\SendSummary::class,
+    'api' => true,
 ];
