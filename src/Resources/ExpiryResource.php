@@ -2,18 +2,19 @@
 
 namespace Moox\Expiry\Resources;
 
-use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Actions\DeleteBulkAction;
-use Filament\Tables\Actions\ViewAction;
-use Filament\Tables\Filters\SelectFilter;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Moox\Expiry\Models\Expiry;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Section;
+use Filament\Tables\Actions\ViewAction;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Tables\Actions\DeleteBulkAction;
 use Moox\Expiry\Resources\ExpiryResource\Pages;
 
 class ExpiryResource extends Resource
@@ -184,8 +185,12 @@ class ExpiryResource extends Resource
                 Tables\Columns\TextColumn::make('notifyUser.display_name')
                     ->label('Verantwortlicher')
                     ->toggleable()
-                    ->sortable()
                     ->searchable()
+                    ->sortable(query: function (Builder $query, string $direction): Builder {
+                        return $query->leftJoin('tyar9_users', 'expiries.notified_to', '=', 'tyar9_users.ID')
+                                     ->orderBy('tyar9_users.display_name', $direction)
+                                     ->select('expiries.*');
+                    })
                     ->limit(50),
                 Tables\Columns\TextColumn::make('expiry_job')
                     ->label('Typ')
