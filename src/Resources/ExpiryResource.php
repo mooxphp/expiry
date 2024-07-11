@@ -189,7 +189,7 @@ class ExpiryResource extends Resource
                     ->sortable(query: function (Builder $query, string $direction): Builder {
                         $wpPrefix = env('WP_PREFIX', 'tyar9_');
 
-                        $tableName = $wpPrefix . 'users';
+                        $tableName = $wpPrefix.'users';
 
                         return $query
                             ->leftJoin($tableName, 'expiries.notified_to', '=', "{$tableName}.ID")
