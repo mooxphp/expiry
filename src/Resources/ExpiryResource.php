@@ -187,8 +187,13 @@ class ExpiryResource extends Resource
                     ->toggleable()
                     ->searchable()
                     ->sortable(query: function (Builder $query, string $direction): Builder {
-                        return $query->leftJoin('tyar9_users', 'expiries.notified_to', '=', 'tyar9_users.ID')
-                            ->orderBy('tyar9_users.display_name', $direction)
+                        $wpPrefix = env('WP_PREFIX', 'tyar9_');
+
+                        $tableName = $wpPrefix . 'users';
+
+                        return $query
+                            ->leftJoin($tableName, 'expiries.notified_to', '=', "{$tableName}.ID")
+                            ->orderBy("{$tableName}.display_name", $direction)
                             ->select('expiries.*');
                     })
                     ->limit(50),
