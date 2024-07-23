@@ -187,7 +187,7 @@ class ExpiryResource extends Resource
                     ->toggleable()
                     ->searchable()
                     ->sortable(query: function (Builder $query, string $direction): Builder {
-                        $wpPrefix = env('WP_PREFIX', 'tyar9_');
+                        $wpPrefix = config('press.wordpress_prefix');
 
                         $tableName = $wpPrefix.'users';
 
