@@ -54,39 +54,63 @@ return [
         'tabs' => [
             'all' => [
                 'label' => 'trans//core::common.all',
-                'field' => 'expiry_job',
-                'value' => '',
                 'icon' => 'gmdi-filter-list',
+                'query' => [],
             ],
             'documents' => [
                 'label' => 'trans//core::common.documents',
-                'field' => 'expiry_job',
-                'value' => 'Documents',
                 'icon' => 'gmdi-text-snippet',
+                'query' => [
+                    [
+                        'field' => 'expiry_job',
+                        'operator' => '=',
+                        'value' => 'Documents',
+                    ],
+                ],
             ],
             'articles' => [
                 'label' => 'trans//core::common.articles',
-                'field' => 'expiry_job',
-                'value' => 'Articles',
                 'icon' => 'gmdi-account-circle',
+                'query' => [
+                    [
+                        'field' => 'expiry_job',
+                        'operator' => '=',
+                        'value' => 'Articles',
+                    ],
+                ],
             ],
             'tasks' => [
                 'label' => 'trans//core::common.tasks',
-                'field' => 'expiry_job',
-                'value' => 'Tasks',
                 'icon' => 'gmdi-no-accounts',
+                'query' => [
+                    [
+                        'field' => 'expiry_job',
+                        'operator' => '=',
+                        'value' => 'Tasks',
+                    ],
+                ],
             ],
             'no-user' => [
                 'label' => 'trans//core::expiry.no_assignee',
-                'field' => 'status',
-                'value' => 'No Assignee',
                 'icon' => 'gmdi-no-accounts',
+                'query' => [
+                    [
+                        'field' => 'status',
+                        'operator' => '=',
+                        'value' => 'No assignee',
+                    ],
+                ],
             ],
             'no-date' => [
                 'label' => 'trans//core::expiry.no_expiry_date',
-                'field' => 'status',
-                'value' => 'No Expiry Date',
                 'icon' => 'gmdi-no-accounts',
+                'query' => [
+                    [
+                        'field' => 'status',
+                        'operator' => '=',
+                        'value' => 'No expiry date',
+                    ],
+                ],
             ],
         ],
     ],
