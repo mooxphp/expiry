@@ -125,6 +125,7 @@ class ExpiryResource extends Resource
 
             ])
             ->bulkActions([DeleteBulkAction::make()]);
+
     }
 
     public static function getRelations(): array

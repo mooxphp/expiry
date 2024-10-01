@@ -40,6 +40,7 @@ class CustomExpiryAction extends Action
                 }
             })
             ->form(function ($record) {
+
                 $cycleOptions = collect(config('expiry.cycle_options'))->mapWithKeys(function ($value, $key) {
                     return [__('core::expiry.'.$key) => $value];
                 });
